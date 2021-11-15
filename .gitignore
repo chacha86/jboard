@@ -2,3 +2,4 @@
 out
 servletTest.iml
 web/WEB-INF/lib
+.DS_Store
