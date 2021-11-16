@@ -37,6 +37,7 @@ public class SqlMapper {
         ArrayList<Object> params = new ArrayList<>();
         params.add(id);
         Map<String, Object> article = worker.getSingle(sql, params);
+        worker.destroySession();
         return article;
     }
 }

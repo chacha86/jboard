@@ -6,13 +6,16 @@ public class UriStruct {
 
     private final int URI_MAX_LENGTH = 4;
     private String basePattern;
+    private String methodType;
     private String module;
     private String group;
     private String identity;
 
-    public UriStruct(String uri) {
-        if(uri == null) {
-            uri = "";
+    public UriStruct(String methodType, String uri) {
+        this.methodType = methodType;
+        if(uri == null || uri.length() <= 1) {
+           this.module = "/index.html";
+           return;
         }
         String[] uriBits = uri.split("/");
 
@@ -31,12 +34,21 @@ public class UriStruct {
     }
 
     public UriType getUriType() {
-        if(getFullURI().equals(basePattern)) {
-            return UriType.CollectionType;
-        } else if(getFullURI().startsWith(basePattern + "/")) {
-            return UriType.ResourceType;
+        if(methodType.equals("GET")) {
+            if(getFullURI().equals(basePattern)) {
+                return UriType.GET_COLLECTION;
+            } else if(getFullURI().startsWith(basePattern + "/")) {
+                return UriType.GET_SINGLE;
+            }
+        } else if(methodType.equals("POST")){
+            return UriType.POST;
+        } else if(methodType.equals("DELETE")) {
+            return UriType.DELETE;
+        } else if(methodType.equals("PUT")) {
+            return UriType.PUT;
         }
-        return UriType.ErrorType;
+
+        return UriType.ERROR;
     }
 
     public String getModule() {

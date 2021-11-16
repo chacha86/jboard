@@ -13,7 +13,7 @@ public class DBManager {
     public DBWorker createSession() {
         Connection conn = jboardCp.getConnection();
         if(conn == null) {
-            System.out.println("pool이 비었음");
+            System.out.println("empty pool");
         }
         return new DBWorker(conn);
     }

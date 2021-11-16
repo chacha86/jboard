@@ -25,7 +25,7 @@ public class JboardCP {
     public Connection getConnection() {
         if(!connectionPool.empty()) {
             Connection conn = connectionPool.pop();
-            System.out.println(conn + "이 인출");
+            System.out.println(conn + " withdraw");
             return conn;
         }
 
@@ -35,7 +35,7 @@ public class JboardCP {
     public void returnConnection(Connection conn) {
         if(connectionPool.size() < maxConn) {
             connectionPool.push(conn);
-            System.out.println(conn + "이 반환");
+            System.out.println(conn + " return");
         }
     }
 
@@ -48,7 +48,7 @@ public class JboardCP {
             for(int i = 0; i < maxConn; i++) {
                 
                 Connection conn = DriverManager.getConnection(configuration.getUrl(), configuration.getUsername(), configuration.getUserpass());
-                System.out.println(conn + "생성되어 풀에 저장");
+                System.out.println(conn + "save the pool");
                 connectionPool.push(conn);
             }
 

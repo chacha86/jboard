@@ -2,8 +2,11 @@ package com.jboard.model.vo;
 
 public enum UriType {
 
-    CollectionType,
-    ResourceType,
-    ErrorType
+    GET_COLLECTION,
+    GET_SINGLE,
+    POST,
+    PUT,
+    DELETE,
+    ERROR
 
 }

@@ -4,6 +4,7 @@ import com.jboard.model.myJDBC.SqlMapper;
 import com.jboard.model.vo.UriStruct;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,24 +20,32 @@ public class ArticleController {
     public ArticleController(HttpServletRequest req, HttpServletResponse res) {
        this.request = req;
        this.response = res;
-    }
-    public String doMethod(UriStruct uriStruct) {
+    } public String doMethod(UriStruct uriStruct) {
         String result = "";
         switch (uriStruct.getUriType()) {
-            case CollectionType :
+            case GET_COLLECTION:
                 List<Map<String, Object>> datas = getArticles();
                 result = getCollectionTypeResult(datas);
                 break;
-            case ResourceType:
+            case GET_SINGLE:
                 Map<String, Object> article = getArticleById(uriStruct.getIdentity());
-                result = getResourceTypeResult(article);
+                result = getSingleTypeResult(article);
                 break;
-            case ErrorType:
-                result = "page not found";
+            case POST:
+                //Map<String, Object> article = getArticleMapFromJsonParam();
+                //addArticle(article);
             default:
+                result = "page not found";
                 break;
         }
         return result;
+    }
+
+    private Map<String, Object> getArticleMapFromJsonParam() {
+        String param = request.getParameter("jsonParam");
+        JSONObject jsonObject = (JSONObject) JSONValue.parse(param);
+        System.out.println(jsonObject.toString());
+        return null;
     }
 
     private Map<String, Object> getArticleById(String id) {
@@ -47,10 +56,15 @@ public class ArticleController {
         return mapper.getAllArticles();
     }
 
-    private String getResourceTypeResult(Map<String, Object> map) {
+    private String getUpdateTypeResult() {
+        String resultCode = "200";
+        return resultCode;
+    }
+
+    private String getSingleTypeResult(Map<String, Object> map) {
        JSONObject jobj = new JSONObject();
        if(map == null) {
-          return "데이터가 없습니다";
+          return "no data";
        }
        jobj.putAll(map);
        return jobj.toJSONString();
