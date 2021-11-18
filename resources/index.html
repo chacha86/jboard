@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="head"></div>
+        <div class="content">
+            <div class="form-div">
+                <div>
+                    <input type="text" name="title" placeholder="제목을 입력해주세요">
+                </div>
+                <div>
+                    <input type="text" name="body" placeholder="내용을 입력해주세요">
+                </div>
+            </div>
+            <div class="btns">
+                <input type="button" value="등록" onclick="requestAjax();">
+            </div>
+        </div>
+        <div class="foot"></div>
+    </div>
+    <script>
+        function requestAjax() {
+            var xhr = new XMLHttpRequest();
+            let formData = document.querySelectorAll(".form-div input");
+            console.log(formData[0]);
+            console.log(formData[1]);
+
+            var data = {
+                title: formData[0],
+                body: formData[1],
+            };
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === xhr.DONE) {
+                    if (xhr.status === 200 || xhr.status === 201) {
+                        console.log(xhr.responseText);
+                    } else {
+                        console.error(xhr.responseText);
+                    }
+                }
+            };
+            xhr.open('POST', 'http://localhost:9000/Article/articles');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); // 콘텐츠 타입을 json으로
+            xhr.send('title=' + formData[0].value + '&body='+ formData[1].value); // 데이터를 문자열로 동봉해서 전송한다    
+        }
+        
+    </script>
+</body>
+
+</html>

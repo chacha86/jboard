@@ -1,5 +1,8 @@
 package com.jboard.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +14,12 @@ public class UrlFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         String uri = ((HttpServletRequest)request).getRequestURI();
-        System.out.println(uri);
+        Logger logger = LoggerFactory.getLogger(UrlFilter.class);
+        logger.debug("debug: " + uri);
+        logger.info("info: " + uri);
+        logger.error("error : " + uri);
         if(uri.equals("/")) {
-            ((HttpServletResponse)response).sendRedirect("http://localhost:8082/index.html");
+            ((HttpServletResponse)response).sendRedirect("http://localhost/index.html");
             return;
         }
         chain.doFilter(request, response);

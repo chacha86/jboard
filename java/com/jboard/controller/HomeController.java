@@ -1,6 +1,8 @@
 package com.jboard.controller;
 
-import com.jboard.model.vo.UriStruct;
+import com.jboard.model.vo.MyURI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,15 +14,15 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/")
 public class HomeController extends HttpServlet {
 
+    Logger logger = LoggerFactory.getLogger(HomeController.class);
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String methodType = req.getMethod();
-        System.out.println(methodType);
         String uri = req.getRequestURI();
-        UriStruct uriStruct = new UriStruct(methodType, uri);
+        MyURI myUri = new MyURI(methodType, uri);
         ArticleController controller = new ArticleController(req, resp);
-        String result = controller.doMethod(uriStruct);
+        String result = controller.doMethod(myUri);
         resp.getWriter().append(result);
 
     }

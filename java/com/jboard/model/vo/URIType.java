@@ -1,6 +1,6 @@
 package com.jboard.model.vo;
 
-public enum UriType {
+public enum URIType {
 
     GET_COLLECTION,
     GET_SINGLE,

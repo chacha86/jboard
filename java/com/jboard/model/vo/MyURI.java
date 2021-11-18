@@ -2,16 +2,17 @@ package com.jboard.model.vo;
 
 import com.jboard.util.MyUtil;
 
-public class UriStruct {
+public class MyURI {
 
     private final int URI_MAX_LENGTH = 4;
     private String basePattern;
     private String methodType;
     private String module;
     private String group;
-    private String identity;
+    private String id;
 
-    public UriStruct(String methodType, String uri) {
+    public MyURI(String methodType, String uri) {
+
         this.methodType = methodType;
         if(uri == null || uri.length() <= 1) {
            this.module = "/index.html";
@@ -29,26 +30,26 @@ public class UriStruct {
         this.basePattern = getFullURI();
 
         if(uriBits.length == URI_MAX_LENGTH) {
-            this.identity = uriBits[URI_MAX_LENGTH - 1];
+            this.id = uriBits[URI_MAX_LENGTH - 1];
         }
     }
 
-    public UriType getUriType() {
+    public URIType getUriType() {
         if(methodType.equals("GET")) {
             if(getFullURI().equals(basePattern)) {
-                return UriType.GET_COLLECTION;
+                return URIType.GET_COLLECTION;
             } else if(getFullURI().startsWith(basePattern + "/")) {
-                return UriType.GET_SINGLE;
+                return URIType.GET_SINGLE;
             }
         } else if(methodType.equals("POST")){
-            return UriType.POST;
+            return URIType.POST;
         } else if(methodType.equals("DELETE")) {
-            return UriType.DELETE;
+            return URIType.DELETE;
         } else if(methodType.equals("PUT")) {
-            return UriType.PUT;
+            return URIType.PUT;
         }
 
-        return UriType.ERROR;
+        return URIType.ERROR;
     }
 
     public String getModule() {
@@ -67,16 +68,16 @@ public class UriStruct {
         this.group = group;
     }
 
-    public String getIdentity() {
-        return identity;
+    public String getId() {
+        return id;
     }
 
-    public void setIdentity(String identity) {
-        this.identity = identity;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFullURI() {
-        String url = MyUtil.nullToBlank(this.module) + "/" + MyUtil.nullToBlank(this.group) + "/" + MyUtil.nullToBlank(this.identity) + "/";
+        String url = MyUtil.nullToBlank(this.module) + "/" + MyUtil.nullToBlank(this.group) + "/" + MyUtil.nullToBlank(this.id) + "/";
         return url.substring(0, url.length() - 2);
     }
 }

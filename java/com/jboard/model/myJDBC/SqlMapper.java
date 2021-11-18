@@ -1,6 +1,7 @@
 package com.jboard.model.myJDBC;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +32,19 @@ public class SqlMapper {
         return articles;
     }
 
-    public Map<String, Object> getArticleById(int id) {
-        String sql = "select * from article where idx = ?";
+    public Map<String, Object> getArticleById(Map<String, Object> params) {
+        String sql = "select * from article where idx = #{idx}";
         DBWorker worker = dbManager.createSession();
-        ArrayList<Object> params = new ArrayList<>();
-        params.add(id);
         Map<String, Object> article = worker.getSingle(sql, params);
         worker.destroySession();
         return article;
+    }
+
+    public int insertArticle(Map<String, Object> params) {
+        String sql = "insert into article set title = #{title}, body = #{body}, memberIdx = #{memberIdx}, regDate = NOW(), updateDate = NOW()";
+        DBWorker worker = dbManager.createSession();
+        int result = worker.update(sql, params);
+        worker.destroySession();
+        return result;
     }
 }

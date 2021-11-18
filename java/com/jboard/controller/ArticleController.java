@@ -1,13 +1,14 @@
 package com.jboard.controller;
 
 import com.jboard.model.myJDBC.SqlMapper;
-import com.jboard.model.vo.UriStruct;
+import com.jboard.model.vo.MyURI;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,20 +21,22 @@ public class ArticleController {
     public ArticleController(HttpServletRequest req, HttpServletResponse res) {
        this.request = req;
        this.response = res;
-    } public String doMethod(UriStruct uriStruct) {
+
+    } public String doMethod(MyURI uriStruct) {
         String result = "";
         switch (uriStruct.getUriType()) {
             case GET_COLLECTION:
-                List<Map<String, Object>> datas = getArticles();
-                result = getCollectionTypeResult(datas);
+                List<Map<String, Object>> articlesForList = getArticles();
+                result = getCollectionTypeResult(articlesForList);
                 break;
             case GET_SINGLE:
-                Map<String, Object> article = getArticleById(uriStruct.getIdentity());
-                result = getSingleTypeResult(article);
+                Map<String, Object> articleForSingle = getArticleById(uriStruct.getId());
+                result = getSingleTypeResult(articleForSingle);
                 break;
             case POST:
-                //Map<String, Object> article = getArticleMapFromJsonParam();
-                //addArticle(article);
+                Map<String, Object> articleForAdd = getArticleMapFromParam();
+                result = getPostTypeResult(articleForAdd);
+                break;
             default:
                 result = "page not found";
                 break;
@@ -41,24 +44,51 @@ public class ArticleController {
         return result;
     }
 
-    private Map<String, Object> getArticleMapFromJsonParam() {
-        String param = request.getParameter("jsonParam");
-        JSONObject jsonObject = (JSONObject) JSONValue.parse(param);
-        System.out.println(jsonObject.toString());
-        return null;
+    private void addArticle(Map<String, Object> articleForAdd) {
+        mapper.insertArticle(articleForAdd);
     }
 
-    private Map<String, Object> getArticleById(String id) {
-        return mapper.getArticleById(Integer.parseInt(id));
+    private Map<String, Object> getArticleMapFromParam() {
+        Map<String, Object> article = new HashMap<>();
+        String title = request.getParameter("title");
+        String body = request.getParameter("body");
+        article.put("title", title);
+        article.put("body", body);
+        article.put("memberIdx", 1);
+        return article;
+    }
+
+//    private Map<String, Object> getArticleMapFromJsonParam() {
+//
+//        String title = request.getParameter("title");
+//        String body = request.getParameter("body");
+//        int result = mapper.insertArticle();
+//
+//
+//        JSONObject jsonObject = (JSONObject) JSONValue.parse(param);
+//        System.out.println(jsonObject.toString());
+//        return null;
+//    }
+
+    private Map<String, Object> getArticleById(String idx) {
+        if(idx == null) {
+            idx = "0";
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("idx", Integer.parseInt(idx));
+        return mapper.getArticleById(params);
     }
 
     private List<Map<String, Object>> getArticles() {
         return mapper.getAllArticles();
     }
 
-    private String getUpdateTypeResult() {
-        String resultCode = "200";
-        return resultCode;
+    private String getPostTypeResult(Map<String, Object> article) {
+        int result = mapper.insertArticle(article);
+        if(result == 1) {
+            return "article add success : [ " + article.toString() + " ]";
+        }
+        return "add failed";
     }
 
     private String getSingleTypeResult(Map<String, Object> map) {
