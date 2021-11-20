@@ -1,5 +1,8 @@
 package com.jboard.model.myJDBC;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Map;
 public class SqlMapper {
 
     private DBManager dbManager;
+    private Logger logger = LoggerFactory.getLogger(SqlMapper.class);
     private String driverClassName = "com.mysql.cj.jdbc.Driver";
     private String url = "jdbc:mysql://101.101.218.17:3306/t1?serverTimezone=UTC";
     private String username = "testUser";
@@ -42,6 +46,24 @@ public class SqlMapper {
 
     public int insertArticle(Map<String, Object> params) {
         String sql = "insert into article set title = #{title}, body = #{body}, memberIdx = #{memberIdx}, regDate = NOW(), updateDate = NOW()";
+        DBWorker worker = dbManager.createSession();
+        logger.debug(params.toString());
+        int result = worker.update(sql, params);
+        worker.destroySession();
+        return result;
+    }
+
+    public int updateArticle(Map<String, Object> params) {
+        String sql = "update article set title = #{title}, body = #{body}, updateDate = NOW() where idx = #{idx}";
+        logger.debug(params.toString());
+        DBWorker worker = dbManager.createSession();
+        int result = worker.update(sql, params);
+        worker.destroySession();
+        return result;
+    }
+
+    public int deleteArticle(Map<String, Object> params) {
+        String sql = "delete from article where idx = #{idx}";
         DBWorker worker = dbManager.createSession();
         int result = worker.update(sql, params);
         worker.destroySession();

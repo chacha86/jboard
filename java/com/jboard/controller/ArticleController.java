@@ -2,18 +2,28 @@ package com.jboard.controller;
 
 import com.jboard.model.myJDBC.SqlMapper;
 import com.jboard.model.vo.MyURI;
+import com.mysql.cj.xdevapi.JsonString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ArticleController {
 
+    private Logger logger = LoggerFactory.getLogger(ArticleController.class);
     private SqlMapper mapper = new SqlMapper();
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -24,6 +34,7 @@ public class ArticleController {
 
     } public String doMethod(MyURI uriStruct) {
         String result = "";
+        logger.info(uriStruct.getUriType().toString());
         switch (uriStruct.getUriType()) {
             case GET_COLLECTION:
                 List<Map<String, Object>> articlesForList = getArticles();
@@ -34,8 +45,17 @@ public class ArticleController {
                 result = getSingleTypeResult(articleForSingle);
                 break;
             case POST:
-                Map<String, Object> articleForAdd = getArticleMapFromParam();
+                Map<String, Object> articleForAdd = getArticleMapFromJsonParam();
                 result = getPostTypeResult(articleForAdd);
+                break;
+            case PUT:
+                Map<String, Object> articleForUpdate = getArticleMapFromJsonParam();
+                result = getPutTypeResult(articleForUpdate);
+                break;
+            case DELETE :
+                logger.info("DELETE ENTER");
+                Map<String, Object> articleForDelete = getArticleMapFromJsonParam();
+                result = getDeleteTypeResult(articleForDelete);
                 break;
             default:
                 result = "page not found";
@@ -44,31 +64,58 @@ public class ArticleController {
         return result;
     }
 
-    private void addArticle(Map<String, Object> articleForAdd) {
-        mapper.insertArticle(articleForAdd);
+    private String getDeleteTypeResult(Map<String, Object> articleForUpdate) {
+        int result = deleteArticle(articleForUpdate);
+        if(result == 1) {
+            return "article delete success : [ " + articleForUpdate.toString() + " ]";
+        }
+        return "delete failed";
     }
 
-    private Map<String, Object> getArticleMapFromParam() {
+    private int deleteArticle(Map<String, Object> articleForDelete) {
+        return mapper.deleteArticle(articleForDelete);
+    }
+
+    private String getPutTypeResult(Map<String, Object> articleForUpdate) {
+        int result = updateArticle(articleForUpdate);
+        if(result == 1) {
+            return "article update success : [ " + articleForUpdate.toString() + " ]";
+        }
+        return "update failed";
+    }
+    private int updateArticle(Map<String, Object> articleForAdd) {
+        return mapper.updateArticle(articleForAdd);
+    }
+
+    private int addArticle(Map<String, Object> articleForAdd) {
+        return mapper.insertArticle(articleForAdd);
+    }
+
+    private Map<String, Object> getArticleMapFromJsonParam() {
         Map<String, Object> article = new HashMap<>();
-        String title = request.getParameter("title");
-        String body = request.getParameter("body");
-        article.put("title", title);
-        article.put("body", body);
-        article.put("memberIdx", 1);
+        try {
+            InputStream inputStream = request.getInputStream(); //Read from a file, or a HttpRequest, or whatever.
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(
+                    new InputStreamReader(inputStream, "UTF-8"));
+
+            article = putToMapArticleDataIfNotNull(article, "idx", jsonObject.get("idx"));
+            article = putToMapArticleDataIfNotNull(article, "memberIdx", jsonObject.get("memberIdx"));
+            article = putToMapArticleDataIfNotNull(article, "title", jsonObject.get("title"));
+            article = putToMapArticleDataIfNotNull(article, "body", jsonObject.get("body"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return article;
     }
-
-//    private Map<String, Object> getArticleMapFromJsonParam() {
-//
-//        String title = request.getParameter("title");
-//        String body = request.getParameter("body");
-//        int result = mapper.insertArticle();
-//
-//
-//        JSONObject jsonObject = (JSONObject) JSONValue.parse(param);
-//        System.out.println(jsonObject.toString());
-//        return null;
-//    }
+    private Map<String, Object> putToMapArticleDataIfNotNull(Map<String, Object> map, String key, Object value) {
+       if( value != null) {
+           map.put(key, value);
+       }
+       return map;
+    }
 
     private Map<String, Object> getArticleById(String idx) {
         if(idx == null) {
@@ -84,7 +131,7 @@ public class ArticleController {
     }
 
     private String getPostTypeResult(Map<String, Object> article) {
-        int result = mapper.insertArticle(article);
+        int result = addArticle(article);
         if(result == 1) {
             return "article add success : [ " + article.toString() + " ]";
         }

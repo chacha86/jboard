@@ -19,6 +19,13 @@ public class HomeController extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String methodType = req.getMethod();
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+        resp.addHeader("Access-Control-Allow-Headers", "*");
+        logger.info("method : " + methodType);
+        if(methodType.equals("OPTIONS")) {
+            return;
+        }
         String uri = req.getRequestURI();
         MyURI myUri = new MyURI(methodType, uri);
         ArticleController controller = new ArticleController(req, resp);

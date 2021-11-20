@@ -18,6 +18,7 @@ public class UrlFilter implements Filter {
         logger.debug("debug: " + uri);
         logger.info("info: " + uri);
         logger.error("error : " + uri);
+
         if(uri.equals("/")) {
             ((HttpServletResponse)response).sendRedirect("http://localhost/index.html");
             return;

@@ -24,6 +24,7 @@ public class DBWorker {
                 result = convertResultSetToMapList(rs);
             } catch (SQLException e) {
                 e.printStackTrace();
+                destroySession();
             }
         }
 
@@ -77,18 +78,19 @@ public class DBWorker {
     }
 
     private BindingMaterials getBindingMaterials(String paramQuery, Map<String, Object> params) {
-        char deli = '#';
+        String deli = "#{";
         List<Object> orderedParamValueList = new ArrayList<>();
         int isNext = paramQuery.indexOf(deli);
         while(isNext != -1) {
             int startIdx = paramQuery.indexOf('{');
             int endIdx = paramQuery.indexOf('}');
             String paramKey = paramQuery.substring(startIdx + 1, endIdx);
-            orderedParamValueList.add(params.get(paramKey));
+            orderedParamValueList.add(params.get(paramKey.trim()));
             paramQuery = paramQuery.replace(String.format("#{%s}", paramKey),"?");
             isNext = paramQuery.indexOf(deli);
         }
         logger.debug("queryForPrepareStetment : " + paramQuery);
+        logger.debug("param : " + orderedParamValueList.toString());
         BindingMaterials bindingMaterials = new BindingMaterials(orderedParamValueList, paramQuery);
         return bindingMaterials;
     }
@@ -144,8 +146,8 @@ public class DBWorker {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            destroySession();
         }
-
         return result;
     }
 }
