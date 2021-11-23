@@ -69,4 +69,13 @@ public class SqlMapper {
         worker.destroySession();
         return result;
     }
+
+    public List<Map<String, Object>> getRepliesByArticleId(Map<String, Object> params) {
+        String sql = "select * from articleReply where articleIdx = #{articleIdx}";
+        DBWorker dbWorker = dbManager.createSession();
+        List<Map<String, Object>> replies = dbWorker.getList(sql, params);
+        dbWorker.destroySession();
+
+        return replies;
+    }
 }

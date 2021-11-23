@@ -32,7 +32,8 @@ public class ArticleController {
        this.request = req;
        this.response = res;
 
-    } public String doMethod(MyURI uriStruct) {
+    }
+    public String doMethod(MyURI uriStruct) {
         String result = "";
         logger.info(uriStruct.getUriType().toString());
         switch (uriStruct.getUriType()) {
@@ -64,16 +65,32 @@ public class ArticleController {
         return result;
     }
 
-    private String getDeleteTypeResult(Map<String, Object> articleForUpdate) {
-        int result = deleteArticle(articleForUpdate);
-        if(result == 1) {
-            return "article delete success : [ " + articleForUpdate.toString() + " ]";
+
+    private String getCollectionTypeResult(List<Map<String, Object>> datas) {
+        JSONArray jarr = new JSONArray();
+        //jarr.add(datas.get(0));
+        for(int i = 0; i < datas.size(); i++) {
+            JSONObject jobj = new JSONObject();
+            jarr.add(datas.get(i));
         }
-        return "delete failed";
+        return jarr.toJSONString();
     }
 
-    private int deleteArticle(Map<String, Object> articleForDelete) {
-        return mapper.deleteArticle(articleForDelete);
+    private String getSingleTypeResult(Map<String, Object> map) {
+       JSONObject jobj = new JSONObject();
+       if(map == null) {
+          return "no data";
+       }
+       jobj.putAll(map);
+       return jobj.toJSONString();
+    }
+
+    private String getPostTypeResult(Map<String, Object> article) {
+        int result = addArticle(article);
+        if(result == 1) {
+            return "article add success : [ " + article.toString() + " ]";
+        }
+        return "add failed";
     }
 
     private String getPutTypeResult(Map<String, Object> articleForUpdate) {
@@ -83,12 +100,13 @@ public class ArticleController {
         }
         return "update failed";
     }
-    private int updateArticle(Map<String, Object> articleForAdd) {
-        return mapper.updateArticle(articleForAdd);
-    }
 
-    private int addArticle(Map<String, Object> articleForAdd) {
-        return mapper.insertArticle(articleForAdd);
+    private String getDeleteTypeResult(Map<String, Object> articleForUpdate) {
+        int result = deleteArticle(articleForUpdate);
+        if(result == 1) {
+            return "article delete success : [ " + articleForUpdate.toString() + " ]";
+        }
+        return "delete failed";
     }
 
     private Map<String, Object> getArticleMapFromJsonParam() {
@@ -110,11 +128,15 @@ public class ArticleController {
         }
         return article;
     }
+
     private Map<String, Object> putToMapArticleDataIfNotNull(Map<String, Object> map, String key, Object value) {
-       if( value != null) {
-           map.put(key, value);
-       }
-       return map;
+        if( value != null) {
+            map.put(key, value);
+        }
+        return map;
+    }
+    private List<Map<String, Object>> getArticles() {
+        return mapper.getAllArticles();
     }
 
     private Map<String, Object> getArticleById(String idx) {
@@ -126,35 +148,16 @@ public class ArticleController {
         return mapper.getArticleById(params);
     }
 
-    private List<Map<String, Object>> getArticles() {
-        return mapper.getAllArticles();
+    private int addArticle(Map<String, Object> articleForAdd) {
+        return mapper.insertArticle(articleForAdd);
     }
 
-    private String getPostTypeResult(Map<String, Object> article) {
-        int result = addArticle(article);
-        if(result == 1) {
-            return "article add success : [ " + article.toString() + " ]";
-        }
-        return "add failed";
+    private int updateArticle(Map<String, Object> articleForAdd) {
+        return mapper.updateArticle(articleForAdd);
     }
 
-    private String getSingleTypeResult(Map<String, Object> map) {
-       JSONObject jobj = new JSONObject();
-       if(map == null) {
-          return "no data";
-       }
-       jobj.putAll(map);
-       return jobj.toJSONString();
-    }
-
-    private String getCollectionTypeResult(List<Map<String, Object>> datas) {
-        JSONArray jarr = new JSONArray();
-        //jarr.add(datas.get(0));
-        for(int i = 0; i < datas.size(); i++) {
-            JSONObject jobj = new JSONObject();
-            jarr.add(datas.get(i));
-        }
-        return jarr.toJSONString();
+    private int deleteArticle(Map<String, Object> articleForDelete) {
+        return mapper.deleteArticle(articleForDelete);
     }
 }
 

@@ -4,10 +4,9 @@ import com.jboard.util.MyUtil;
 
 public class MyURI {
 
-    private final int URI_MAX_LENGTH = 4;
+    private final int URI_MAX_LENGTH = 3;
     private String basePattern;
     private String methodType;
-    private String module;
     private String group;
     private String id;
 
@@ -15,18 +14,17 @@ public class MyURI {
 
         this.methodType = methodType;
         if(uri == null || uri.length() <= 1) {
-           this.module = "/index.html";
+           group = "/index.html";
            return;
         }
         String[] uriBits = uri.split("/");
 
-        if(uriBits.length < 3) {
-            this.module = "Error";
+        if(uriBits.length < 2) {
+            this.group = "error";
             return;
         }
 
-        this.module = uriBits[1];
-        this.group = uriBits[2];
+        this.group = uriBits[1];
         this.basePattern = getFullURI();
 
         if(uriBits.length == URI_MAX_LENGTH) {
@@ -52,14 +50,6 @@ public class MyURI {
         return URIType.ERROR;
     }
 
-    public String getModule() {
-        return module;
-    }
-
-    public void setModule(String module) {
-        this.module = module;
-    }
-
     public String getGroup() {
         return group;
     }
@@ -77,7 +67,7 @@ public class MyURI {
     }
 
     public String getFullURI() {
-        String url = MyUtil.nullToBlank(this.module) + "/" + MyUtil.nullToBlank(this.group) + "/" + MyUtil.nullToBlank(this.id) + "/";
+        String url = MyUtil.nullToBlank(this.group) + "/" + MyUtil.nullToBlank(this.id) + "/";
         return url.substring(0, url.length() - 2);
     }
 }
