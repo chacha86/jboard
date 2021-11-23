@@ -1,11 +1,7 @@
 package com.jboard.model.myJDBC;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class BindingMaterials {
 
     private List<Object> orderedParamList;
@@ -20,15 +16,8 @@ public class BindingMaterials {
         return orderedParamList;
     }
 
-    public void setOrderedParamList(List<Object> orderedParamList) {
-        this.orderedParamList = orderedParamList;
-    }
-
     public String getBindingQeury() {
         return bindingQeury;
     }
 
-    public void setBindingQeury(String bindingQeury) {
-        this.bindingQeury = bindingQeury;
-    }
 }

@@ -15,9 +15,9 @@ public class UrlFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         String uri = ((HttpServletRequest)request).getRequestURI();
         Logger logger = LoggerFactory.getLogger(UrlFilter.class);
-        logger.debug("debug: " + uri);
-        logger.info("info: " + uri);
-        logger.error("error : " + uri);
+        logger.debug("debug123: " + uri);
+        logger.info("info123: " + uri);
+        logger.error("error123 : " + uri);
 
         if(uri.equals("/")) {
             ((HttpServletResponse)response).sendRedirect("http://localhost/index.html");
