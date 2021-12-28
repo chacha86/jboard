@@ -1,7 +1,7 @@
 package com.jboard.controller;
 
 import com.jboard.model.myJDBC.SqlMapper;
-import com.jboard.model.vo.MyURI;
+import com.jboard.model.vo.URIHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,7 +30,7 @@ public class ArticleController2 {
        this.response = res;
 
     }
-    public String doMethod(MyURI uriStruct) {
+    public String doMethod(URIHandler uriStruct) {
         String result = "";
         logger.info(uriStruct.getUriType().toString());
         switch (uriStruct.getUriType()) {

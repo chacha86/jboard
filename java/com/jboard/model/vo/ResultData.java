@@ -1,4 +1,4 @@
-package com.jboard.vo;
+package com.jboard.model.vo;
 
 import org.json.simple.JSONObject;
 

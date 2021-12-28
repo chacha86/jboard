@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="head"></div>
+        <div class="content">
+                <div class="add-form-div">
+                    <h3>게시물 등록</h3>
+                    <div>
+                        <input type="text" name="title" placeholder="제목을 입력해주세요">
+                    </div>
+                    <div>
+                        <input type="text" name="body" placeholder="내용을 입력해주세요">
+                    </div>
+                </div>
+                <div class="btns">
+                    <input type="button" value="등록" onclick="addArticle();">
+                </div>
+            <hr>
+            <div class="update-form-div">
+                <h3>게시물 수정</h3>
+                <div>
+                    <input type="text" name="idx" placeholder="번호을 입력해주세요">
+                </div>
+                <div>
+                    <input type="text" name="title" placeholder="제목을 입력해주세요">
+                </div>
+                <div>
+                    <input type="text" name="body" placeholder="내용을 입력해주세요">
+                </div>
+            </div>
+            <div class="btns">
+                <input type="button" value="수정" onclick="updateArticle();">
+            </div>
+            <hr>
+            <div class="delete-form-div">
+                <h3>게시물 삭제</h3>
+                <div>
+                    <input type="text" name="idx" placeholder="번호을 입력해주세요">
+                </div>
+            </div>
+            <div class="btns">
+                <input type="button" value="삭제" onclick="deleteArticle();">
+            </div>
+
+            <hr>
+            <div class="list-form-div">
+                <h3>게시물 목록</h3>
+                <div id="list">
+                </div>
+                <div class="btns">
+                    <input type="button" value="목록" onclick="getArticleList();">
+                </div>
+            </div>
+            <hr>
+            <div class="detail-form-div">
+                <h3>게시물 상세</h3>
+                <div>
+                    <input type="text" name="idx" placeholder="번호을 입력해주세요">
+                </div>
+                <div id="detail">
+                </div>
+                <div class="btns">
+                    <input type="button" value="상세" onclick="getArticleOneById();">
+                </div>
+            
+            </div>
+            <hr>
+        </div>
+        <div class="foot"></div>
+    </div>
+    <script>
+        function requestAjax(method, uri, data) {
+            var xhr = new XMLHttpRequest();
+            
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === xhr.DONE) {
+                    if (xhr.status === 200 || xhr.status === 201) {
+                        console.log(xhr.responseText);
+                    } else {
+                        console.error(xhr.responseText);
+                    }
+                }
+            };
+            xhr.open(method, uri);
+            xhr.setRequestHeader('Content-Type', 'application/json'); // 콘텐츠 타입을 json으로
+            xhr.send(JSON.stringify(data)); // 데이터를 문자열로 동봉해서 전송한다    
+        }
+        function addArticle() {
+            let formData = document.querySelectorAll(".add-form-div input");
+            let uri = 'http://localhost:9000/articles';
+            let method = 'POST';
+            let data = {
+                title : formData[0].value,
+                body : formData[1].value
+            };
+            requestAjax(method, uri, data);
+        }
+        function updateArticle() {
+            let formData = document.querySelectorAll(".update-form-div input");
+            let dataMap = new Map();
+            let uri = 'http://localhost:9000/articles';
+            let method = 'PUT';
+            let data = {
+                idx : formData[0].value,
+                title : formData[1].value,
+                body : formData[2].value
+            };
+            requestAjax(method, uri, data);
+        }
+        function deleteArticle() {
+            let formData = document.querySelectorAll(".delete-form-div input");
+            let dataMap = new Map();
+            let uri = 'http://localhost:9000/articles';
+            let method = 'DELETE';
+
+            let data = {
+                idx : formData[0].value,
+            };
+            requestAjax(method, uri, data);
+        }
+        function getArticleList() {
+            let formData = document.querySelectorAll(".list-form-div input");
+            let uri = 'http://localhost:9000/articles';
+            let method = 'GET';
+
+            requestAjax(method, uri, null);
+        }
+        function getArticleOneById() {
+            let formData = document.querySelectorAll(".detail-form-div input");
+            let uri = 'http://localhost:9000/articles';
+            let method = 'GET';
+            let data = {
+                idx : formData[0].value
+            };
+            requestAjax(method, uri, data);
+            method = 'http://localhost:9000/articles/' + idx + '/replies';
+            
+            requestAjax(method, uri, data);
+        }
+    
+    </script>
+</body>
+
+</html>

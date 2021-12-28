@@ -10,7 +10,7 @@ public class EncodingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
-        response.setContentType("text/html;charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
 
         chain.doFilter(request, response);
     }

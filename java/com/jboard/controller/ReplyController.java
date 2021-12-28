@@ -2,13 +2,10 @@ package com.jboard.controller;
 
 import com.jboard.exception.NotImplementsResourceMethodException;
 import com.jboard.model.myJDBC.SqlMapper;
-import com.jboard.vo.ResultData;
-import com.jboard.vo.ResultDataBuilder;
-import org.json.simple.JSONObject;
+import com.jboard.model.vo.ResultData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

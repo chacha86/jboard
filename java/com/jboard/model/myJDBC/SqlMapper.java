@@ -3,8 +3,6 @@ package com.jboard.model.myJDBC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +26,15 @@ public class SqlMapper {
     }
 
     public List<Map<String, Object>> getAllArticles() {
-        String sql = "select * from article";
+//        String sql = "select * from article";
+        String sql = """
+                select *
+                from 
+                article
+                """;
         DBWorker dbWorker = dbManager.createSession();
         List<Map<String, Object>> articles = dbWorker.getList(sql, null);
         dbWorker.destroySession();
-
         return articles;
     }
 

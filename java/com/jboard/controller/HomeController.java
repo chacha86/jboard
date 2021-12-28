@@ -1,6 +1,6 @@
 package com.jboard.controller;
 
-import com.jboard.model.vo.MyURI;
+import com.jboard.model.vo.URIHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,11 @@ public class HomeController extends HttpServlet {
         if(methodType.equals("OPTIONS")) {
             return;
         }
-        String uri = req.getRequestURI();
-        MyURI myUri = new MyURI(methodType, uri);
+        //String uri = req.getRequestURI();
+        //URIHandler uriHandler = new URIHandler(methodType, uri);
+        //req.setAttribute("URIHandler", uriHandler);
         ArticleController controller = new ArticleController(req, resp);
-        String result = controller.doMethod(myUri);
+        String result = controller.doMethod();
         resp.getWriter().append(result);
 
     }
