@@ -27,3 +27,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+=======
+.idea
+out
+servletTest.iml
+web/WEB-INF/lib
+.DS_Store
